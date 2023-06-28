@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 #define int long long
-
 using namespace std;
 
 int seg[200005*4],l_[200005],r_[200005],l2[200005],r2[200005];
