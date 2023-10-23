@@ -1,27 +1,55 @@
 #include <bits/stdc++.h>
-
+ 
 #define int long long
-
+ 
 using namespace std;
-
-vector<int> e1[200005],e2[200005];
-bool ok1[200005],ok2[200005];
-
-void dfs1(int idx)
+ 
+vector<int> e[200005];
+ 
+int scc[200005];
+int up[200005],dep[200005],id = 0;
+bool in_stack[200005];
+stack<int> s;
+ 
+int scc_cnt = 0;
+ 
+void dfs(int idx)
 {
-	for( auto i : e1[idx] )
+	up[idx] = dep[idx] = ++id;
+	s.push(idx);
+	in_stack[idx] = true;
+	
+	for( auto i : e[idx] )
 	{
-		if( ok1[i] == false ) ok1[i] = true , dfs1(i);
+		if( dep[i] != 0 && in_stack[i] == false ) continue;
+		
+		if( dep[i] == 0 ) dfs(i);
+		up[idx] = min(up[i],up[idx]);
+	}
+	
+	if( up[idx] == dep[idx] )
+	{
+		int v;
+		scc_cnt++;
+		do
+		{
+			v = s.top();
+			s.pop();
+			in_stack[v] = false;
+			
+			scc[v] = scc_cnt;
+				
+		}while( v != idx );
+		
+		in_stack[idx] = false;
+		scc[idx] = scc_cnt;
 	}
 	
 	return;
 }
-void dfs2(int idx)
+void Tarjan_SCC(int n)
 {
-	for( auto i : e2[idx] )
-	{
-		if( ok2[i] == false ) ok2[i] = true , dfs2(i);
-	}
+	for(int i=1;i<=n;i++) if( dep[i] == 0 ) dfs(i);
 }
 signed main(void)
 {
@@ -30,30 +58,16 @@ signed main(void)
 	
 	int n,m;
 	cin >> n >> m;
+	
 	for(int i=0;i<m;i++)
 	{
 		int x,y;
-		cin >> x >> y;
-		e1[x].push_back(y);
-		e2[y].push_back(x);
+		cin >> x >> y , e[x].push_back(y);
 	}
 	
-	ok1[1] = true , ok2[1] = true;
-	dfs1(1) , dfs2(1);
+	Tarjan_SCC(n);
 	
-	int pos = -1;
-	
-	for(int i=2;i<=n;i++)
-	{
-		if( ok1[i] == false || ok2[i] == false )
-		{
-			if( ok1[i] == false ) cout << "NO\n" << 1 << " " << i << "\n";
-			else cout << "NO\n" << i << " " << 1 << "\n";
-			return 0;
-		}
-	}
-	
-	cout << "YES\n";
-	
-	return 0;
+	cout << scc_cnt << "\n";
+	for(int i=1;i<=n;i++) cout << scc[i] << " ";
+	cout << "\n";
 }
