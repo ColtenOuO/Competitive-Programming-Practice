@@ -1,59 +1,121 @@
+import java.util.*
+import java.math.*
+import kotlin.math.*
+
 fun main()
 {
     var q = readLine()!!.toInt()
     for( t in 0 until q )
     {
         var n = readLine()!!.toInt()
-        var a = readLine()!!.split(" ").map { it.toInt() }.toMutableList()
-        var b = readLine()!!.split(" ").map { it.toInt() }.toMutableList()
+        var a = readLine()!!.split(" ").map { it.toLong() }.toMutableList()
+        var b = readLine()!!.split(" ").map { it.toLong() }.toMutableList()
 
-        var c = a
-        var d = b
-
+        var dp1 = Array<Long>(n+1){0}
+        var dp2 = Array<Long>(n+1){0}
+        var dp3 = Array<Long>(n+1){0}
+        var dp4 = Array<Long>(n+1){0}
+        var ans1 = Array<Long>(n+1){0}
+        var ans2 = Array<Long>(n+1){0}
+        var ans3 = Array<Long>(n+1){0}
+        var ans4 = Array<Long>(n+1){0}
         for( i in 0 until n )
         {
+            dp1[i] = 0
+            dp2[i] = 0
+            dp3[i] = 0
+            dp4[i] = 0
             if( a[i] < b[i] )
             {
-                var tmp = a[i]
-                a[i] = b[i]
-                b[i] = tmp
-            }
-            if( c[i] > d[i] )
-            {
-                var tmp = c[i]
-                c[i] = d[i]
-                d[i] = tmp
+                var tmp = b[i]
+                b[i] = a[i]
+                a[i] = tmp
             }
         }
 
-        var total1 = 0
-        var total2 = 0
-        var mx1 = 0
-        var mx2 = 0
-
-        var mx4 = 0
-        var mx3 = 0
-        var total3 = 0
-        var total4 = 0
+    /*    for( i in 0 until n )
+        {
+            print(a[i])
+            print(" ")
+        }
+        println("")
         for( i in 0 until n )
         {
-            total1 = total1 + a[i]
-            total2 = total2 + b[i]
-            total3 = total3 + c[i]
-            total4 = total4 + d[i]
+            print(b[i])
+            print(" ")
+        }
+        println("") */
 
-            if( total1 < 0 ) total1 = 0
-            if( total2 < 0 ) total2 = 0
-            if( total3 < 0 ) total3 = 0
-            if( total4 < 0 ) total4 = 0
+        var sum1 = 0L
+        var sum2 = 0L
+        var sum3 = 0L
+        var sum4 = 0L
 
-            if( mx1 < total1 ) mx1 = total1
-            if( mx2 < total2 ) mx2 = total2
-            if( mx3 < total3 ) mx3 = total3
-            if( mx4 < total4 ) mx4 = total4
+        for( i in 0 until n )
+        {
+            if( i == 0 )
+            {
+                dp1[i] = max(a[i],0)
+                dp2[i] = max(b[i],0)
+            }
+            else
+            {
+                dp1[i] = max(dp1[i-1]+a[i],a[i])
+                dp2[i] = max(dp2[i-1]+b[i],b[i])
+
+                if( dp1[i] < 0 ) dp1[i] = 0
+                if( dp2[i] < 0 ) dp2[i] = 0
+            }
+
+            sum1 = max(sum1,dp1[i])
+            sum2 = max(sum2,dp2[i])
+
+            ans1[i] = sum1
+            ans2[i] = sum2
+        }
+        for( i in ( n - 1 ) downTo 0 )
+        {
+            if( i == n - 1 )
+            {
+                dp3[i] = max(a[i],0)
+                dp4[i] = max(b[i],0)
+            }
+            else
+            {
+                dp3[i] = max(dp3[i+1]+a[i],a[i])
+                dp4[i] = max(dp4[i+1]+b[i],b[i])
+
+                if( dp3[i] < 0 ) dp3[i] = 0
+                if( dp4[i] < 0 ) dp4[i] = 0
+            }
+
+            sum3 = max(sum3,dp3[i])
+            sum4 = max(sum4,dp4[i])
+
+            ans3[i] = sum3
+            ans4[i] = sum4
         }
 
-        if( mx1 + mx2 > mx3 + mx4 ) println(mx1+mx2)
-        else println(mx3+mx4)
+        var ans = 0L
+        for( i in 0 until n )
+        {
+            var tmp1 = dp1[i]
+            if( i + 1 < n ) tmp1 += dp3[i+1]
+            
+            tmp1 = max(tmp1,ans1[i])
+            if( i + 1 < n ) tmp1 = max(tmp1,ans3[i+1])
+
+            var tmp2 = dp2[i]
+            if( i + 1 < n ) tmp2 += dp4[i+1]
+
+            tmp2 = max(tmp2,ans2[i])
+            if( i + 1 < n ) tmp2 = max(tmp2,ans4[i+1])
+
+            if( i + 1 < n ) ans = max(ans,ans1[i]+ans3[i+1])
+
+            ans = max(ans,tmp1+tmp2)
+        }
+
+        println(ans)
     }
 }
