@@ -24,7 +24,7 @@ void dfs(int idx,int last)
                 s.push(make_pair(idx,i.second));
                 vis[i.first] = 1;
                 dfs(i.first,idx);
-                if( s.size() != 0 ) s.pop();
+                s.pop();
             }
             else if( p[i.second] != 0 ) continue;
             else
@@ -44,8 +44,8 @@ void dfs(int idx,int last)
                     if( v == i.first || ok == 0 ) break; 
                 }
                 p[i.second] = 1;
-                if( ok == 0 ) return;
                 for( auto j : arr ) s.push(j);
+                if( ok == 0 ) return;
             }
         }
     }

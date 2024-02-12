@@ -1,3 +1,1 @@
-a = list(map(int,input().split()))
-
-print(a)
+print(-9223372036854775808+-9223372036854775808)
