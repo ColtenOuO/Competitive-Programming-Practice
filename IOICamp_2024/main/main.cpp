@@ -1,21 +1,31 @@
-int dp[101] = {};
-
-class Solution {
-public:
-    int numDecodings(string s) {
-        s = "%" + s;
-        dp[0] = 1;
-        dp[1] = 1;
-        if( s[1] == '0' ) return 0;
-        for(int i=2;i<s.size();i++)
-        {
-            if( s[i] == '0' && ( s[i-1] == '$' || s[i-1] == '0' || s[i-1] > '2' ) ) return 0;
-
-            dp[i] = 0;
-            if( s[i] != '0' ) dp[i] += dp[i-1];
-            if( s[i-1] == '1' ) dp[i] += dp[i-2];
-            if( s[i-1] == '2' && s[i] <= '6' ) dp[i] += dp[i-2];
-        }
-        return dp[s.size()-1];
-    }
+#include <iostream>
+#include <algorithm>
+#include <utility>
+#define int long long
+using namespace std;
+struct Type{
+    int a,b,c;
 };
+bool cmp(Type &x,Type &y)
+{
+    return x.b - x.a < y.b - y.a;
+}
+signed main()
+{
+    int n;
+    cin >> n;
+    vector<Type> v(n);
+    for(int i=0;i<n;i++) cin >> v[i].a >> v[i].b >> v[i].c;
+    sort(v.begin(),v.end(),cmp);
+    int front = 0,ans = 0, sum = 0;
+    for(int i=0;i<n;i++)
+    {
+        ans += ( ( i + 1 ) * i / 2 );
+        ans += ( v[i].a + v[i].c ) * v[i].b;
+        ans -= front;
+        front += ( v[i].b - v[i].a );
+    }
+
+    cout << ans << "\n";
+    return 0;
+}
