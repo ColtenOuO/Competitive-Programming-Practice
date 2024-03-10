@@ -52,7 +52,7 @@ node merge(node a,node b){
             c.lsum_2+=b.lsum_2;
         }
         if(b.rsum_2==b.r-b.l+1){
-            c.rsum_2+=a.rsum_2;
+            c.rsum_2+=a.rsum_2; 
         }
     }
     
